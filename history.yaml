@@ -1,0 +1,16 @@
+exclude:
+  domains:
+    - automation
+  entities:
+    - !secret binary_cube
+    - group.all_automations
+    - group.inside_temperature
+    - group.outside_temperature
+    - !secret aqara_gateway_light
+    - !secret phone_mediaplayer_1
+    - !secret phone_mediaplayer_2
+    - !secret aqara_gateway_sensor
+
+
+
+

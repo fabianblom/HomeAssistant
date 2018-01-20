@@ -1,0 +1,4 @@
+vacation_mode:
+  name: Vacation mode
+  initial: off
+  icon: mdi:airplane

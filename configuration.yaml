@@ -1,0 +1,45 @@
+homeassistant:
+  name: Home
+  latitude: !secret latitude
+  longitude: !secret longitude
+  elevation: !secret elevation
+  unit_system: metric
+  time_zone: Europe/Amsterdam
+  customize: !include customize.yaml
+
+frontend:
+
+config:
+hassio: 
+http:
+  api_password: !secret api_password
+  trusted_networks:
+    - !secret phone_ip_1
+    - !secret phone_ip_2
+  ip_ban_enabled: True
+  login_attempts_threshold: 5
+updater:
+conversation:
+map:
+sun:
+light: !include lights.yaml
+device_tracker: !include device_trackers.yaml
+climate:
+  - platform: toon
+    name: Toon Thermostat
+    host: !secret climate_ip
+    port: !secret climate_port
+sensor: !include sensors.yaml
+group: !include groups.yaml
+scene: !include scenes.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml 
+notify: !include notify.yaml
+xiaomi_aqara:
+  discovery_retry: 5
+  gateways:
+    - key: !secret aqara_key
+history: !include history.yaml
+logbook: !include logbook.yaml
+input_boolean: !include input_booleans.yaml
+media_player: !include media_players.yaml

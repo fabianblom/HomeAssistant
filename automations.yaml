@@ -1,0 +1,354 @@
+#
+# TIMED EVENTS
+#
+- alias: 'Turn 1 lamp on when the sun gets dim'
+  trigger:
+    platform: numeric_state
+    entity_id: sun.sun
+    value_template: '{{ state.attributes.elevation }}'
+    below: 3.0
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: input_boolean.vacation_mode
+        state: 'off'
+      - condition: time
+        before: '23:00:00'
+        after: '15:00:00'
+  action:
+    service: light.turn_on
+    entity_id: light.livingroom_1
+
+- alias: 'Turn all lights on as the sun gets dimmer'
+  trigger:
+    platform: numeric_state
+    entity_id: sun.sun
+    value_template: '{{ state.attributes.elevation }}'
+    below: 1.5
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: input_boolean.vacation_mode
+        state: 'off'
+      - condition: state
+        entity_id: group.all_devices
+        state: 'home'
+      - condition: time
+        before: '23:00:00'
+        after: '15:00:00'
+  action:
+    service: homeassistant.turn_on
+    entity_id: group.livingroom
+
+- alias: 'Turn garden lights on 30 min after sunset'
+  trigger:
+    platform: sun
+    event: sunset
+    offset: "00:30:00"
+  condition:
+    - condition: state
+      entity_id: input_boolean.vacation_mode
+      state: 'off'
+  action:
+    service: light.turn_on
+    entity_id: 
+      - light.garden_1
+      - light.garden_2
+      - light.garden_3
+    data:
+      brightness: 1
+
+- alias: 'Turn garden lights off at 11 pm'
+  trigger:
+    platform: time
+    at: '23:00:00'
+  condition:
+    condition: and
+    conditions:
+    - condition: state
+      entity_id: input_boolean.vacation_mode
+      state: 'off'
+    - condition: state
+      entity_id: group.all_devices
+      state: 'home'
+  action:
+    service: homeassistant.turn_off
+    entity_id: group.garden
+
+- alias: 'Turn all lights off at 10:30 pm when not at home'
+  trigger:
+    platform: time
+    at: '22:30:00'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: input_boolean.vacation_mode
+        state: 'off'
+      - condition: state
+        entity_id: group.all_devices
+        state: 'not_home'
+  action:
+    service: homeassistant.turn_off
+    entity_id: group.all_lights
+
+#
+# CUBE EVENTS
+#
+- alias: 'Shake for livingroom lights on'
+  trigger:
+    platform: event
+    event_type: cube_action
+    event_data:
+      entity_id: !secret binary_cube
+      action_type: shake_air
+  condition:
+    - condition: state
+      entity_id: group.livingroom
+      state: 'off'
+  action:
+    service: script.turn_on
+    entity_id: script.evening_script
+
+- alias: 'Shake for livingroom lights off'
+  trigger:
+    platform: event
+    event_type: cube_action
+    event_data:
+      entity_id: !secret binary_cube
+      action_type: shake_air
+  condition:
+    - condition: state
+      entity_id: group.livingroom
+      state: 'on'
+  action:
+    service: homeassistant.turn_off
+    entity_id: group.livingroom
+
+- alias: 'Double tap for sleeping mode'
+  trigger:
+    platform: event
+    event_type: cube_action
+    event_data:
+      entity_id: !secret binary_cube
+      action_type: tap_twice
+  action:
+    service: script.turn_on
+    entity_id: script.sleep_script
+
+#
+# MOTION DETECTION
+#
+- alias: 'Hallway motion trigger'
+  trigger:
+    platform: state
+    entity_id: !secret hallway_motion_trigger
+    from: 'off'
+    to: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: group.all_devices
+        state: 'not_home'
+      - condition: sun
+        after: sunset
+      - condition: state
+        entity_id: input_boolean.vacation_mode
+        state: 'off'
+  action:
+    - service: script.turn_on
+      entity_id: script.evening_script
+
+- alias: 'Stairs motion trigger on'
+  trigger:
+    platform: state
+    entity_id: !secret stairs_motion_trigger
+    to: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: group.all_devices
+        state: 'home'
+      - condition: time
+        before: '9:00:00'
+        after: '5:00:00'
+      - condition: sun
+        before: sunrise
+      - condition: state
+        entity_id: input_boolean.vacation_mode
+        state: 'off'
+  action:
+    - service: homeassistant.turn_on
+      entity_id: group.livingroom
+
+- alias: 'Stairs motion trigger off'
+  trigger:
+    platform: state
+    entity_id: !secret stairs_motion_trigger
+    to: 'off'
+    for:
+      minutes: 10
+  condition:
+    condition: and
+    conditions:
+      - condition: time
+        before: '9:15:00'
+        after: '5:00:00'
+      - condition: sun
+        before: sunrise
+  action:
+    - service: homeassistant.turn_off
+      entity_id: group.livingroom
+
+#
+# PRESENCE DETECTION
+#
+- alias: 'To Away'
+  trigger:
+    platform: state
+    entity_id: group.all_devices
+    from: 'home'
+    to: 'not_home'
+    for: 
+      minutes: 5
+  condition:
+    - condition: state
+      entity_id: input_boolean.vacation_mode
+      state: 'off'
+  action:
+    service: script.turn_on
+    entity_id: script.away_script
+
+- alias: 'To Home'
+  trigger:
+    platform: state
+    entity_id: group.all_devices
+    from: 'not_home'
+    to: 'home'
+    for: 
+      minutes: 3
+  condition:
+    - condition: state
+      entity_id: input_boolean.vacation_mode
+      state: 'off'
+  action:
+    service: script.turn_on
+    entity_id: script.coming_home_script
+
+- alias: 'Lights on'
+  trigger:
+    platform: state
+    entity_id: group.all_devices
+    from: 'not_home'
+    to: 'home'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: input_boolean.vacation_mode
+        state: 'off'
+      - condition: numeric_state
+        entity_id: sun.sun
+        value_template: '{{ state.attributes.elevation }}'
+        below: 0.5
+      - condition: time
+        after: '18:00:00'
+        before: '23:00:00'
+  action:
+    - service: script.turn_on
+      entity_id: script.evening_script
+
+
+#
+# VACATION MODE
+#
+- alias: 'Turn 1 lamp on when the sun gets dim'
+  trigger:
+    platform: numeric_state
+    entity_id: sun.sun
+    value_template: '{{ state.attributes.elevation }}'
+    below: 0.5
+  condition:
+    - condition: state
+      entity_id: input_boolean.vacation_mode
+      state: 'on'
+  action:
+    service: light.turn_on
+    entity_id: light.livingroom_1
+
+- alias: 'Turn garden lights on 60 min after sunset'
+  trigger:
+    platform: sun
+    event: sunset
+    offset: "01:00:00"
+  condition:
+    - condition: state
+      entity_id: input_boolean.vacation_mode
+      state: 'on'
+  action:
+    service: light.turn_on
+    entity_id: 
+      - light.garden_1
+      - light.garden_2
+      - light.garden_3
+    data:
+      brightness: 1
+
+- alias: 'Turn all lights off at 10:30 pm'
+  trigger:
+    platform: time
+    at: '22:30:00'
+  condition:
+    - condition: state
+      entity_id: input_boolean.vacation_mode
+      state: 'on'
+  action:
+    service: homeassistant.turn_off
+    entity_id: group.all_lights
+
+#
+# MISC
+#
+- alias: 'Notify Home assistant update'
+  trigger:
+    platform: state
+    entity_id: updater.updater
+  action:
+    service: notify.notify
+    data:
+      message: 'There is a new Home Assistant release available.'
+
+- alias: 'Restart Home Assistant at 4 am'
+  trigger: 
+    platform: time
+    at: '04:00:00'
+  action:
+    service: script.turn_on
+    entity_id: script.restart_script
+
+- alias: 'Device battery is low'
+  trigger:
+    - platform: time
+      at: '18:00:00'
+  condition:
+    condition: or
+    conditions:
+      - condition: numeric_state
+        entity_id: 'sensor.battery_cube'
+        below: '5'
+      - condition: numeric_state
+        entity_id: 'sensor.battery_motion_1'
+        below: '5'
+      - condition: numeric_state
+        entity_id: 'sensor.battery_motion_2'
+        below: '5'
+  action:
+    - service: notify.notify
+      data:
+        title: Low Battery
+        message: "One of your devices has less than 5% battery"
+

@@ -1,0 +1,129 @@
+default_view:
+  view: yes
+  icon: mdi:home 
+  entities:
+    - !secret device_tracker1
+    - !secret device_tracker2
+    - sensor.inside_temperature
+    - sensor.weather_temperature
+    - group.livingroom
+    - group.garden
+
+scene_view:
+  view: yes
+  icon: mdi:movie
+  entities:
+    - script.evening_script
+    - script.sleep_script
+    - script.away_script
+    - script.movie_script
+
+temperature_view:
+  view: yes
+  icon: mdi:temperature-celsius
+  entities:
+    - group.inside_temperature
+    - group.outside_temperature
+
+automation_view:
+  view: yes
+  icon: mdi:auto-fix
+  entities:
+    - group.automation_time
+    - group.automation_cube
+    - group.automation_presence
+    - group.automation_motion
+    - group.automation_vacation
+    - group.automation_notification
+
+settings_view:
+  view: yes
+  icon: mdi:settings
+  entities:
+    - group.settings
+    - group.battery_levels
+
+livingroom:
+  name: Livingroom
+  entities:
+    - light.livingroom_1
+    - light.livingroom_2
+    - light.livingroom_3
+
+garden:
+  name: Garden
+  entities:
+    - light.garden_1
+    - light.garden_2
+    - light.garden_3
+
+inside_temperature:
+  name: Inside
+  entities:
+    - sensor.inside_temperature
+    - sensor.target_temperature
+    - sensor.inside_program
+
+outside_temperature:
+  name: Outside
+  entities:
+    - sensor.weather_temperature
+    - sensor.sunset_time
+    - sensor.sunrise_time
+
+settings:
+  name: Settings
+  entities:
+    - input_boolean.vacation_mode
+
+battery_levels:
+  name: Battery Levels
+  entities:
+    - sensor.battery_cube
+    - sensor.battery_motion_1
+    - sensor.battery_motion_2
+
+automation_time:
+  name: Timed automations
+  entities:
+    - automation.turn_1_lamp_on_when_the_sun_gets_dim
+    - automation.turn_all_lights_on_as_the_sun_gets_dimmer
+    - automation.turn_garden_lights_off_at_11_pm
+    - automation.turn_garden_lights_on_30_min_after_sunset 
+
+automation_cube:
+  name: Cube automations
+  entities:
+    - automation.shake_for_livingroom_lights_on
+    - automation.shake_for_livingroom_lights_off
+    - automation.double_tap_for_sleeping_mode
+
+automation_presence:
+  name: Presence automations
+  entities:
+    - automation.to_home
+    - automation.to_comfort
+    - automation.to_sleep
+    - automation.to_away
+    - automation.lights_on
+    - automation.lights_off
+
+automation_motion:
+  name: Motion automations
+  entities:
+    - automation.stairs_motion_trigger_on
+    - automation.stairs_motion_trigger_off
+    - automation.hallway_motion_trigger
+
+automation_vacation:
+  name: Vacation automations
+  entities:
+    - automation.turn_1_lamp_on_when_the_sun_gets_dim
+    - automation.turn_all_lights_off_at_1030_pm
+    - automation.turn_garden_lights_on_60_min_after_sunset
+
+automation_notification:
+  name: Misc automations
+  entities:
+    - automation.home_assistant_update
+    - automation.restart_home_assistant_at_4_am

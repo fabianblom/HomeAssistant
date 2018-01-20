@@ -1,0 +1,2 @@
+- platform: braviatv
+  host: !secret sony_ip

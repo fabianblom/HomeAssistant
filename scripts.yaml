@@ -1,0 +1,144 @@
+sleep_script:
+  sequence:
+  - service: logbook.log
+    data_template:
+      name: Home
+      message: is going to sleep
+  - service: homeassistant.turn_off
+    data:
+      entity_id: group.all_lights
+  - service: climate.set_operation_mode
+    data:
+      operation_mode: Sleep
+  - service: media_player.turn_off
+    data:
+      entity_id: media_player.sony_bravia_tv
+
+away_script:
+  sequence:
+  - service: logbook.log
+    data_template:
+      name: Home
+      message: is away
+  - service: homeassistant.turn_off
+    data:
+      entity_id: light.livingroom_2
+  - service: homeassistant.turn_off
+    data:
+      entity_id: light.livingroom_3
+  - service: climate.set_operation_mode
+    data:
+      operation_mode: Away
+
+coming_home_script:
+  sequence:
+    - service: logbook.log
+      data_template:
+        name: Home
+        message: is at home
+    - service: climate.set_operation_mode
+      data_template:
+        entity_id: climate.toon_thermostat
+        operation_mode: >
+          {% if now().hour >= 18 and now().hour < 22 %}
+            Comfort 
+          {% elif now().hour >= 23 and now().hour < 24 %}
+            Sleep 
+          {% elif now().hour >= 8 and now().hour < 18 %}
+            Home 
+          {% elif now().hour >= 0 and now().hour < 8 %}
+            Sleep 
+          {% else %}
+            Home 
+          {% endif %}
+        
+
+evening_script:
+  sequence:
+    - service: light.turn_on
+      entity_id: light.livingroom_1
+      data:
+        brightness: 110
+        color_temp: 340
+        transition: 1
+    - service: light.turn_on
+      entity_id: light.livingroom_2
+      data:
+        brightness: 110
+        color_temp: 340
+        transition: 1
+    - service: light.turn_on
+      entity_id: light.livingroom_3
+      data:
+        brightness: 110
+        color_temp: 340
+        transition: 1
+
+movie_script:
+  sequence:
+    - condition: and
+      conditions:
+      - condition: state
+        entity_id: input_boolean.vacation_mode
+        state: 'off'
+      - condition: numeric_state
+        entity_id: sun.sun
+        value_template: '{{ state.attributes.elevation }}'
+        below: 0.5
+      - condition: time
+        after: '18:00:00'
+        before: '02:00:00'
+    - service: light.turn_on
+      entity_id: light.livingroom_1
+      data:
+        brightness: 40
+        color_temp: 360
+        transition: 2
+    - service: light.turn_on
+      entity_id: light.livingroom_2
+      data:
+        brightness: 40
+        color_temp: 360
+        transition: 2
+    - service: light.turn_off
+      entity_id: light.livingroom_3
+
+movie_end_script:
+  sequence:
+    - condition: and
+      conditions:
+      - condition: state
+        entity_id: input_boolean.vacation_mode
+        state: 'off'
+      - condition: numeric_state
+        entity_id: sun.sun
+        value_template: '{{ state.attributes.elevation }}'
+        below: 0.5
+      - condition: time
+        after: '18:00:00'
+        before: '02:00:00'
+    - service: light.turn_on
+      entity_id: light.livingroom_1
+      data:
+        brightness: 40
+        color_temp: 360
+        transition: 2
+    - service: light.turn_on
+      entity_id: light.livingroom_2
+      data:
+        brightness: 40
+        color_temp: 360
+        transition: 2
+    - service: light.turn_off
+      entity_id: light.livingroom_3
+
+
+restart_script:
+  sequence:
+  - service: logbook.log
+    data_template:
+      name: Restart
+      message: scheduled restart during the night
+  - service: homeassistant.restart
+
+      

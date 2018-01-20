@@ -1,0 +1,18 @@
+sensor.weather_temperature:
+  friendly_name: Outside
+
+group.all_automations:
+  hidden: false
+  friendly_name: All automations
+
+script.movie_script:
+  friendly_name: Movie scene
+
+script.away_script:
+  friendly_name: Away scene
+
+script.sleep_script:
+  friendly_name: Sleeping scene
+
+script.evening_script:
+  friendly_name: Evening scene

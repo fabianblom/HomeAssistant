@@ -1,0 +1,15 @@
+- platform: yeelight
+  devices:
+    192.168.178.47:
+     name: Livingroom 1   
+    192.168.178.121:
+      name: Livingroom 2
+    192.168.178.122:
+      name: Livingroom 3
+    192.168.178.112:
+      name: Garden 1
+    192.168.178.113:
+      name: Garden 2
+    192.168.178.114:
+      name: Garden 3
+
