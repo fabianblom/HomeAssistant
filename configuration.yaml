@@ -31,7 +31,6 @@ climate:
     port: !secret climate_port
 sensor: !include sensors.yaml
 group: !include groups.yaml
-scene: !include scenes.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml 
 notify: !include notify.yaml
