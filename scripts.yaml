@@ -120,17 +120,21 @@ movie_end_script:
     - service: light.turn_on
       entity_id: light.livingroom_1
       data:
-        brightness: 40
-        color_temp: 360
+        brightness: 110
+        color_temp: 340
         transition: 2
     - service: light.turn_on
       entity_id: light.livingroom_2
       data:
-        brightness: 40
-        color_temp: 360
+        brightness: 110
+        color_temp: 340
         transition: 2
-    - service: light.turn_off
+    - service: light.turn_on
       entity_id: light.livingroom_3
+      data: 
+        brightness: 110
+        color_temp: 340
+        transition: 2
 
 
 restart_script:
