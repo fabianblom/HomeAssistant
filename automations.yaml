@@ -346,6 +346,9 @@
       - condition: numeric_state
         entity_id: 'sensor.battery_motion_2'
         below: '5'
+      - condition: numeric_state
+        entity_id: 'sensor.battery_temperature'
+        below: '5'
   action:
     - service: notify.notify
       data:

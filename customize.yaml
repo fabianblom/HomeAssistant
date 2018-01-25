@@ -1,18 +1,22 @@
 sensor.weather_temperature:
   friendly_name: Outside
-
 group.all_automations:
   hidden: false
   friendly_name: All automations
-
 script.movie_script:
   friendly_name: Movie scene
-
 script.away_script:
   friendly_name: Away scene
-
 script.sleep_script:
   friendly_name: Sleeping scene
-
+  can_cancel: false
 script.evening_script:
   friendly_name: Evening scene
+!secret switch_1:
+  friendly_name: Livingroom TV switch
+!secret switch_2:
+  friendly_name: Bedroom TV switch
+!secret bedroom_temperature:
+  friendly_name: Temperature
+!secret bedroom_humidity:
+  friendly_name: Humidity

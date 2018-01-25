@@ -13,6 +13,11 @@ sleep_script:
   - service: media_player.turn_off
     data:
       entity_id: media_player.sony_bravia_tv
+  - delay:
+      seconds: 10
+  - service: homeassistant.turn_off
+    data:
+      entity_id: !secret switch_1
 
 away_script:
   sequence:
@@ -76,6 +81,23 @@ evening_script:
 
 movie_script:
   sequence:
+    - service: light.turn_on
+      entity_id: light.livingroom_1
+      data:
+        brightness: 40
+        color_temp: 360
+        transition: 2
+    - service: light.turn_on
+      entity_id: light.livingroom_2
+      data:
+        brightness: 40
+        color_temp: 360
+        transition: 2
+    - service: light.turn_off
+      entity_id: light.livingroom_3
+
+movie_start_script:
+  sequence:
     - condition: and
       conditions:
       - condition: state
@@ -102,6 +124,7 @@ movie_script:
         transition: 2
     - service: light.turn_off
       entity_id: light.livingroom_3
+
 
 movie_end_script:
   sequence:

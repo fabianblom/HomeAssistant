@@ -8,6 +8,15 @@ default_view:
     - sensor.weather_temperature
     - group.livingroom
     - group.garden
+    - group.switches
+
+temperature_view:
+  view: yes
+  icon: mdi:temperature-celsius
+  entities:
+    - group.inside_temperature
+    - group.bedroom_temperature
+    - group.outside_temperature
 
 scene_view:
   view: yes
@@ -17,13 +26,6 @@ scene_view:
     - script.sleep_script
     - script.away_script
     - script.movie_script
-
-temperature_view:
-  view: yes
-  icon: mdi:temperature-celsius
-  entities:
-    - group.inside_temperature
-    - group.outside_temperature
 
 automation_view:
   view: yes
@@ -57,12 +59,22 @@ garden:
     - light.garden_2
     - light.garden_3
 
+switches:
+  name: Switches
+  entities:
+    - !secret switch_1
+    - !secret switch_2
+
 inside_temperature:
   name: Inside
   entities:
-    - sensor.inside_temperature
-    - sensor.target_temperature
-    - sensor.inside_program
+    - climate.toon_thermostat
+
+bedroom_temperature:
+  name: Bedroom
+  entities:
+    - !secret bedroom_temperature
+    - !secret bedroom_humidity
 
 outside_temperature:
   name: Outside
@@ -82,6 +94,7 @@ battery_levels:
     - sensor.battery_cube
     - sensor.battery_motion_1
     - sensor.battery_motion_2
+    - sensor.battery_temperature
 
 automation_time:
   name: Timed automations
